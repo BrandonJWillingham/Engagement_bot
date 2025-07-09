@@ -1,0 +1,3 @@
+export const PASSWORD = "HunterxHunter"
+export const USERNAME = "willcunnings41@gmail.com"
+export const CHATGPT_API_KEY = "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"
