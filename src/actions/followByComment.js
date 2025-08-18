@@ -32,6 +32,7 @@ export async function followByComment(page, username) {
         }
 
         const commentElements = await dialog.$$('._a9ym')
+        if(commentElements.length < 1 ) return console.log("error loading comments")
         let commentElement = await commentElements[getRandomInt(0,commentElements.length -1)]
         let anchorText = await dialog.evaluate(() => {
             const anchor = commentElement.querySelector('a');
