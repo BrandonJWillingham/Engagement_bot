@@ -1,0 +1,8 @@
+npm.ps1
+npm.cmd
+npm
+npx
+npx.ps1
+npx.cmd
+/node_modules
+.env

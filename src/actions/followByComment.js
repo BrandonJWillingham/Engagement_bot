@@ -31,7 +31,7 @@ export async function followByComment(page, username) {
             await delay(getRandomInt(10, 25) * 158);
         }
 
-        const commentElements = dialog.$$('._a9ym')
+        const commentElements = await dialog.$$('._a9ym')
         let commentElement = await commentElements[getRandomInt(0,commentElements.length -1)]
         let anchorText = await dialog.evaluate(() => {
             const anchor = commentElement.querySelector('a');
@@ -39,26 +39,26 @@ export async function followByComment(page, username) {
         });
    
         // if the user is the listed user or has been followed before grab another comment
-        while( username = anchorText || hasFollowedBefore(anchorText)){
+        while( username === anchorText || hasFollowedBefore(anchorText)){
             commentElement = await commentElements[getRandomInt(0,commentElements.length -1)]
             anchorText = await dialog.evaluate(() => {
                 const anchor = commentElement.querySelector('a');
                 return anchor ? anchor.innerText.trim() : null;
             }); 
         }
-        const anchor = commentElement.querySelector('a');
-        anchorText = await page.evaluate(() => {
-            const anchor = commentElement.querySelector('a');
+        const anchor = await commentElement.querySelector('a');
+        anchorText = await page.evaluate(async () => {
+            const anchor = await commentElement.querySelector('a');
             return anchor ? anchor.innerText.trim() : null;
         }); 
-        addFollowed(anchorText)
-        anchor.click()
+         addFollowed(anchorText)
+        await anchor.click()
         await delay(getRandomInt(10, 25) * 158);
 
         const followButtonClass = "._ap3a._aaco._aacw._aad6._aade"
         await page.waitForSelector(followButtonClass)
-        const followButton = page.$(followButtonClass)
-        followButton.click()
+        const followButton = await page.$(followButtonClass)
+        await followButton.click()
         await delay(getRandomInt(1, 5) * 158)
 
         return true;
