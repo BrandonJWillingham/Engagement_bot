@@ -1,6 +1,5 @@
 import { delay } from "../helpers/delay.js";
 import { getRandomInt } from "../helpers/random.js";
-import { scrolling } from "../helpers/elementUtils.js";
 
 export async function mindlessScroll(page) {
     try {
