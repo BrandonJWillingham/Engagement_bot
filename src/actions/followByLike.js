@@ -2,6 +2,7 @@ import { search } from './search.js';
 import { delay } from '../helpers/delay.js';
 import { getRandomInt } from '../helpers/random.js';
 import { addFollowed, hasFollowedBefore } from '../helpers/followTracker.js';
+import { scrolling } from '../helpers/elementUtils.js';
 
 
 export async function followByLike(page, username) {
@@ -17,7 +18,12 @@ export async function followByLike(page, username) {
         }
 
         const targetPost = postElements[getRandomInt(0,postElements.length)];
+        await targetPost.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        await delay(getRandomInt(2, 5) * 1000);
+
         await targetPost.click();
+        await delay(getRandomInt(2, 5) * 1000);
+
         await page.waitForSelector('svg[aria-label="Like"]');
         await delay(getRandomInt(2, 5) * 1000);
 
@@ -28,27 +34,33 @@ export async function followByLike(page, username) {
             await page.keyboard.press('Escape');
             return;
         }
-
         await likedByButton.click();
-        await page.waitForSelector('.x1dm5mii.x16mil14.xiojian.x1yutycm.x1lliihq.x193iq5w.xh8yej3');
+        await delay(getRandomInt(2, 5) * 1000);
+
+        await page.waitForSelector('.x1qnrgzn.x1cek8b2.xb10e19.x19rwo8q.x1lliihq.x193iq5w.xh8yej3');
         await delay(getRandomInt(3, 9) * 522);
 
-        const userButtons = await page.$$('.x1dm5mii.x16mil14.xiojian.x1yutycm.x1lliihq.x193iq5w.xh8yej3');
-        console.log("userButtons: ", userButtons)
-        for (let button of userButtons) {
-            console.log("userButtons: ", userButtons)
-            const followButton = await button.$('._ap3a._aaco._aacw._aad6._aade')
+        //scroll to get more user Elements
+        const scrollingEl =  await page.$(".html-div.xdj266r.x14z9mp.xat24cr.x1lziwak.xexx8yu.xyri2b.x18d9i69.x1c1uobl.x9f619.x1jols5v.xjbqb8w.x78zum5.x15mokao.x1ga7v0g.x16uus16.xbiv7yw.x1n2onr6.x6ikm8r.x10wlt62.x1iyjqo2.x2lwn1j.xeuugli.xdt5ytf.xqjyukv.x1qjc9v5.x1oa3qoh.x1nhvcw1 > div")
+        await scrolling(page,scrollingEl,10 )
+        await delay(getRandomInt(3, 9) * 522)
+
+
+        const userElements = await page.$$('.x1qnrgzn.x1cek8b2.xb10e19.x19rwo8q.x1lliihq.x193iq5w.xh8yej3');
+        console.log("userButtons: ", userElements)
+        for (let element of userElements) {
+            console.log("userElements: ", userElements)
+            const followButton = await element.$('._ap3a._aaco._aacw._aad6._aade')
             const innerText = await followButton.evaluate(el => el.innerHTML);
             console.log("text: ",innerText)
             if (innerText.trim() === 'Follow') {
-                const usernameElement = await button.$('._ap3a._aaco._aacw._aacx._aad7._aade');
+                const usernameElement = await element.$('._ap3a._aaco._aacw._aacx._aad7._aade');
                 const targetUsername = await page.evaluate(el => el.innerHTML, usernameElement);
                 console.log("username: ",targetUsername)
                 if (hasFollowedBefore(targetUsername)) {
                     console.log(`Already followed recently: ${targetUsername}`);
                     continue;
                 }
-
                 await followButton.click();
                 addFollowed(targetUsername);
                 console.log(`Followed ${targetUsername} from likes list.`);
@@ -60,6 +72,7 @@ export async function followByLike(page, username) {
         await page.keyboard.press('Escape'); // Close dialog
         await delay(getRandomInt(1, 3) * 1000);
         await page.keyboard.press('Escape'); // Close post
+        await delay(getRandomInt(1, 3) * 1000);
         return true;
 
     } catch (err) {

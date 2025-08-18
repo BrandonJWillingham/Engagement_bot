@@ -1,6 +1,6 @@
 const actionLimits = {
     follow: { maxPerHour: 10, timestamps: [] },
-    comment: { maxPerHour: 2, timestamps: [] },
+    scan: { maxPerHour: 5, timestamps: [] },
     viewStories: { maxPerHour: 40, timestamps: [] },
     unfollowOldUsers: {maxPerHour:10,timestamps: []},
     scroll:{maxPerHour:5,timestamps:[]},

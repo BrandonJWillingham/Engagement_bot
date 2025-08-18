@@ -1,48 +1,33 @@
-import {} from ""
-import { HASHTAGS } from "../../Data";
-import { imageUrlToBase64 } from "../helpers/imgTo64";
-import { CHATGPT_API_KEY } from "../config/constants";
+import { delay } from "../helpers/delay";
+import { scrolling } from "../helpers/elementUtils";
+import { getRandomHash } from "../helpers/inputManagement";
+import { getRandomInt } from "../helpers/random";
 
 
-export async function likeAndCommentPosts(page) {
+export async function likeByHash(page) {
     try {
-        const tag = HASHTAGS[getRandomInt(0, HASHTAGS.length - 1)];
-        await search(page, `#${tag}`);
-
-        await page.evaluate(() => window.scrollBy(0, window.innerHeight));
+        const tag = getRandomHash()
+        await search(page,tag);
         await delay(getRandomInt(2, 5) * 1000);
 
-        const posts = await page.$$('article img');
-        const postIndex = getRandomInt(0, posts.length - 1);
+        await page.waitForSelector("._aagu")
+        const container = page.$("x78zum5.xdt5ytf.x11lt19s.x1n2onr6.xph46j.x7x3xai.xsybdxg.x194l6zq")
+        await delay(getRandomInt(2, 5) * 1000);
+        await scrolling(page,container,20);
 
-        const post = posts[postIndex];
-        const imgUrl = await post.evaluate(img => img.src);
-        const base64 = await imageUrlToBase64(imgUrl);
-
-        await post.click();
+        const posts = page.$$("._aagu")
+        const selectedPost = posts[getRandomInt(0,posts.length -1)]
         await delay(2000);
+
+        await selectedPost.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' })); 
+        await selectedPost.click()
+        await delay(getRandomInt(2, 5) * 1000);
+
+        const dialog = await page.$("div[role='dialog']")
+        const likeButton = await dialog.$('svg[aria-label="Like"')
+        await likeButton.click()
+        await delay(getRandomInt(2, 5) * 1000);
         
-        const client = new OpenAI({ apiKey: CHATGPT_API_KEY});
-        const prompt = `Write a witty Instagram comment for this image: ${base64}`;
-        const response = await client.chat.completions.create({
-            model: "gpt-4",
-            messages: [{ role: "user", content: prompt }]
-        });
-
-        const commentText = response.choices[0].message.content.trim();
-
-        const commentBox = await page.$("textarea[aria-label='Add a comment…']");
-        await commentBox.type(commentText);
-        await delay(1000);
-
-        const postButton = await page.$('button[type="submit"]');
-        await postButton.click();
-
-        for (let i = 0; i < getRandomInt(2, 4); i++) {
-            await like();
-            await nextPost();
-        }
-
         await page.keyboard.press("Escape");
 
     } catch (error) {

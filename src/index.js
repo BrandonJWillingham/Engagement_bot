@@ -9,11 +9,14 @@ puppeteer.use(StealthPlugin());
 async function runBot() {
   const USERNAME = "willcunnings41@gmail.com"
   const PASSWORD = "MyHero2025"
+
   const browser = await puppeteer.launch({ headless: false, ignoreDefaultArgs: ["--enable-automation"]});
   const page = await browser.newPage();
   console.log(await page.evaluate('navigator.webdriver'))
+
   await page.goto('https://www.instagram.com/accounts/login/');
   await delay(1000 + getRandomInt(1,9)* 100);
+  
   // // try up to 3 times
   let loggedIn = false;
   for (let attempt = 1; attempt <= 3 && !loggedIn; attempt++) {
