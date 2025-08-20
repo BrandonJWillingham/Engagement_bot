@@ -1,6 +1,6 @@
-import { delay } from "../helpers/delay";
-import { markLiked } from "../helpers/inputManagement";
-import { getRandomInt } from "../helpers/random";
+import { delay } from "../helpers/delay.js";
+import { markLiked } from "../helpers/inputManagement.js";
+import { getRandomInt } from "../helpers/random.js";
 
 export async function likeUserPost(page, username){
 

@@ -8,7 +8,6 @@ export async function scrolling(page, selector, limit = 20) {
             await page.evaluate((selector) => {
                 const el = document.querySelector(selector);
                 if (el) {
-                    console.log("mindless scroll el:", el);
                     el.scrollTop += Math.floor(Math.random() * 300) + 100;
                 }
             }, selector);

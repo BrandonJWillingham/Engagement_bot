@@ -17,7 +17,7 @@ if (fs.existsSync(INSPIRED_FILE)) {
     inspired_accounts = JSON.parse(fs.readFileSync(INSPIRED_FILE));
 }
 
-const liked_profiles = { }
+let liked_profiles = { }
 if(fs.existsSync(LIKED_PROFILES_FILE)){
     liked_profiles = JSON.parse(fs.readFileSync(LIKED_PROFILES_FILE));
 }
@@ -56,6 +56,9 @@ export function likedOneDayAgo(username){
     return (now - lastLiked) >= ONE_DAY;
 }
 
+export function onWhitelist(username){
+    return whitelist.includes(username)
+}
 export function saveData() {
     fs.writeFileSync(LIKED_PROFILES_FILE, JSON.stringify(LIKED_PROFILES_FILE, null, 2));
     fs.writeFileSync(INSPIRED_FILE, JSON.stringify(inspired_accounts, null, 2));

@@ -1,33 +1,32 @@
-import { delay } from "../helpers/delay";
-import { scrolling } from "../helpers/elementUtils";
-import { getRandomHash } from "../helpers/inputManagement";
-import { getRandomInt } from "../helpers/random";
+import { delay } from "../helpers/delay.js";
+import { scrolling } from "../helpers/elementUtils.js";
+import { getRandomHash } from "../helpers/inputManagement.js";
+import { getRandomInt } from "../helpers/random.js";
+import { search } from "./search.js";
 
 
 export async function likeByHash(page) {
     try {
         const tag = getRandomHash()
+        console.log(tag)
         await search(page,tag);
         await delay(getRandomInt(2, 5) * 1000);
+        await page.keyboard.press('Escape')
 
         await page.waitForSelector("._aagu")
-        const container = page.$("x78zum5.xdt5ytf.x11lt19s.x1n2onr6.xph46j.x7x3xai.xsybdxg.x194l6zq")
-        await delay(getRandomInt(2, 5) * 1000);
-        await scrolling(page,container,20);
++       await delay(getRandomInt(2, 5) * 1000);
+        await scrolling(page,"._9dls._ar44.js-focus-visible._aa4c.__fb-light-mode",5);
 
-        const posts = page.$$("._aagu")
+        const posts = await page.$$("._aagu")
         const selectedPost = posts[getRandomInt(0,posts.length -1)]
-        await delay(2000);
-
         await selectedPost.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' })); 
         await selectedPost.click()
         await delay(getRandomInt(2, 5) * 1000);
 
-        const dialog = await page.$("div[role='dialog']")
-        const likeButton = await dialog.$('svg[aria-label="Like"')
-        await likeButton.click()
-        await delay(getRandomInt(2, 5) * 1000);
+        await page.click('div[role="dialog"] article img', { clickCount: 2, delay: 40 });
         
+        await page.waitForSelector('div[role="dialog"] svg[aria-label="Unlike"]', { timeout: 2000 })
+  .     catch(() => console.warn("⚠️ Like may not have registered"));
         await page.keyboard.press("Escape");
 
     } catch (error) {
@@ -35,11 +34,3 @@ export async function likeByHash(page) {
     }
 }
 
-async function like(){
-    await delay(getRandomInt(3,10)*1000)
-    await page.$("svg[aria-label='Like']").click()
-}
-async function nextPost(){
-    await delay(2000)
-    await page.$("svg[aria-label='Next']").click()
-}

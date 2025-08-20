@@ -4,6 +4,7 @@ const actionLimits = {
     viewStories: { maxPerHour: 40, timestamps: [] },
     unfollowOldUsers: {maxPerHour:10,timestamps: []},
     scroll:{maxPerHour:5,timestamps:[]},
+    like:{maxPerHour:20,timestamps:[]}
 };
 
 
@@ -13,6 +14,11 @@ export function pruneOldTimestamps(timestamps) {
 }
 
 export function canPerformAction(action) {
+      const limit = actionLimits[action];
+    if (!limit) {
+    console.warn(`Unknown action: ${action}`);
+    return false; // or true, depending on how you want to handle it
+  }
     actionLimits[action].timestamps = pruneOldTimestamps(actionLimits[action].timestamps);
     return actionLimits[action].timestamps.length < actionLimits[action].maxPerHour;
 }

@@ -1,11 +1,14 @@
-import { autoFollowedAccounts } from "../../Data"
-import { delay } from "../helpers/delay"
-import { hasFollowedBefore } from "../helpers/followTracker"
-import { getRandomInt } from "../helpers/random"
-import { likeUserPost } from "./likeUserPost"
+import { delay } from "../helpers/delay.js"
+import { hasFollowedBefore } from "../helpers/followTracker.js"
+import { getRandomInt } from "../helpers/random.js"
+import { likeUserPost } from "./likeUserPost.js"
 
 export async function scanNoti(page){
     const notiBtn = await page.$("svg[aria-label='Notifications']")
+    if (!notiBtn) {
+        console.warn('Notifications button not found');
+        return;
+    }
     notiBtn.click()
     await delay(getRandomInt(10,100)*100)
 
