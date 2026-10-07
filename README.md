@@ -26,7 +26,6 @@ This project was primarily built as an exploration of automation, browser contro
 [![Whisper][Whisper]][Whisper-url]
 
 - **Puppeteer** — browser automation and interaction with web content
-- **Puppeteer Extra** — extension layer for Puppeteer plugins
 - **Puppeteer Extra Stealth** — additional browser automation behavior
 - **FFmpeg** — audio and video processing
 - **Whisper** — speech-to-text transcription
